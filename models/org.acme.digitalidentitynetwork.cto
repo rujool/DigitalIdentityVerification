@@ -1,0 +1,45 @@
+namespace org.acme.digitalidentitynetwork
+
+/**
+ * Digital identity network
+ */
+
+asset Passport identified by passportID{
+  o String passportID
+  o String name
+  o String countryName
+  o String gender
+  o DateTime DOB
+  o String fathersName
+  o String mothersName
+  o String nationality
+  o String placeOfBirth
+  o String placeofIssue
+  o DateTime issueDate
+  o DateTime expiryDate
+  o String photoString
+  o String signatureString
+}
+
+participant Government identified by countryName{
+ 	o String countryName
+  o String publicKey
+}
+
+participant PassportHolder identified by userID{
+ 	o String userID
+  --> Passport passport
+}
+
+participant Official identified by officialID{
+ 	o String officialID
+  o String officialName
+  o String designation
+}
+
+
+transaction updatePassport{
+ 	--> Official official
+  --> Government gov
+  --> Passport passport
+}
