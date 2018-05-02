@@ -1,0 +1,11 @@
+extends layout
+block content
+  .main.container
+    .row
+      .col-md-6.col-md-offset-3
+        h3.display-4.m-b-2 Add Government
+        form(action='/api/government',method='POST')
+          div.form-group
+            label(for='name') Government Name
+            input#name.form-control(type='text', name='name')
+          input#submit-btn.btn.btn-primary(type='submit', value='Submit')

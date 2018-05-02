@@ -1,0 +1,30 @@
+extends layout
+block content
+    h3 Passport Details
+    img(src='data:image/png;base64,#{passportData.photoString}',style='max-height:5em')
+    img(src='data:image/png;base64,#{passportData.signatureString}' style='display:block;max-height: 5em')
+    p.
+        Passport ID : #{passportData.passportID}
+    p.
+        Name: #{passportData.name}
+    p.
+        Country Name : #{passportData.countryName}
+    p.
+        Gender: #{passportData.gender}
+    p.
+        Date of Birth : #{passportData.DOB}
+    p.
+        Father's Name: #{passportData.fathersName}
+    p.
+        Mother's Name : #{passportData.mothersName}
+    p.
+        Nationality: #{passportData.nationality}
+    p.
+        Place Of Birth : #{passportData.placeOfBirth}
+    p.
+        Place Of Issue: #{passportData.placeofIssue}    
+    p.
+        Issue Date : #{passportData.issueDate}
+    p.
+        Expiry Date: #{passportData.expiryDate}    
+    
