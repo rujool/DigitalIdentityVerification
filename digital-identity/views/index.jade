@@ -1,19 +1,40 @@
 extends layout
-
 block content
-  .main.container
-    .row
-      .col-md-6.col-md-offset-3
-        h3.display-4.m-b-2 Create Official
-
-        form(method='POST' action='/api/official')
-          div.form-group
+  div.col-xs-12.no_padding.headerSection
+    div.navbar.navbar-inverse.menulist
+      div.container-fluid
+        div.navbar-header
+          a.navbar-brand(href='#') Digital Identity Application
+  
+  div.col-xs-12.no_padding.bodySection
+    div.col-xs-12.addGovernmentPage
+      h4(style='background-color:  black; color:  white;  margin-top: 5px;')
+        label(style='margin: 10px 0 10px 40px;')
+          | Add Official
+      form#addOfficial.signup(action='/api/official',method='POST', style='margin: 50px 0 0px 50px;')
+    
+        div.col-xs-12
+          div.col-xs-12
             label(for='name') Official Name:
-            input#name.form-control(type='text', placeholder='first and last' name='name' required)
-          div.form-group
+          div.col-xs-6
+            input#name.form-control(type='text', placeholder='Enter Given Name and Last Name' name='name' required)
+
+          div.col-xs-12
             label(for='id') Official ID:
+          div.col-xs-6
             input#name.form-control(type='text', placeholder='ID' name='id' required)
-          div.form-group
+
+          div.col-xs-12
             label(for='designation') Designation:
+          div.col-xs-6
             input#name.form-control(type='text', placeholder='Designation' name='designation' required)
-          button.btn.btn-primary(type='submit') Submit
+
+        div.col-xs-11(style='margin-top:30px; padding-left:30px;')
+          button#submit-btn.btn.btn-primary(type='submit', value='Submit') SUBMIT
+
+    div.col-xs-offset-4.col-xs-4
+      p#result
+
+  div.col-xs-12.no_padding.footerSection
+    label.control-label 
+      | Copyright © 2018 A.K.R.R. All Rights Reserved.

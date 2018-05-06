@@ -1,54 +1,115 @@
 extends layout
 block content
-  .main.container
-    .row
-      .col-md-6.col-md-offset-3
-        h3.display-4.m-b-2 Create Passport
-        form(action='/api/passport',method='POST',enctype='multipart/form-data')
-          div.form-group
-            label(for='passport-id') Passport ID
-            input#passport-id.form-control(type='text', name='passport-id')
-          div.form-group
-            label(for='name') Name
-            input#name.form-control(type='text', name='name')
-          div.form-group
-            input#gender-male(type='radio', name='gender', value='male')
-            |  Male
-            br
-            input#gender-female(type='radio', name='gender', value='female')
-            |  Female
-            br
-          div.form-group
-            label(for='DOB') Date of Birth
-            input#DOB.form-control(type='date', name='DOB')
-          div.form-group
-            label(for='fathersName') Father's Name
-            input#fathersName.form-control(type='text', name='fathersName')
-          div.form-group
-            label(for='mothersName') Mother's Name
-            input#mothersName.form-control(type='text', name='mothersName')
-          div.form-group
-            label(for='countryName') Country Name
-            input#countryName.form-control(type='text', name='countryName')
-          div.form-group
-            label(for='nationality') Nationality
-            input#nationality.form-control(type='text', name='nationality')
-          div.form-group
-            label(for='placeOfBirth') Place Of Birth
-            input#placeOfBirth.form-control(type='text', name='placeOfBirth')
-          div.form-group
-            label(for='placeOfIssue') Place of Issue
-            input#placeOfIssue.form-control(type='text', name='placeOfIssue')
-          div.form-group
-            label(for='issueDate') Issue Date
-            input#issueDate.form-control(type='date', name='issueDate')
-          div.form-group
-            label(for='expiryDate') Passport Expiry Date
-            input#expiryDate.form-control(type='date', name='expiryDate')
-          div.form-group
-            label(for='idPhoto') Photo
-            input#idPhoto.form-control(type='file', name='idPhoto')
-          div.form-group
-            label(for='signPhoto') Signature Photo
-            input#signPhoto.form-control(type='file', name='signPhoto')
-          input#submit-btn.btn.btn-primary(type='submit', value='Submit')
+  div.col-xs-12.no_padding.headerSection
+    div.navbar.navbar-inverse.menulist
+      div.container-fluid
+        div.navbar-header
+          a.navbar-brand(href='#') Digital Identity Application
+  
+  div.col-xs-12.no_padding.bodySection
+    div.col-xs-12.signuppage
+      h4(style='background-color:  black; color:  white;  margin-top: 5px;')
+        label(style='margin: 10px 0 10px 40px;')
+          | Register Form
+      form#signUpForm.signup(action='/api/passport',method='POST',enctype='multipart/form-data', style='margin: 50px 0 0px 50px;')
+        div.col-xs-5
+          div.col-xs-12
+            div.col-xs-5.registerInput
+              label(for='passport-id') Passport ID
+            div.col-xs-7.inputBox
+              input#passport-id.form-control(type='text', name='passport-id', placeholder='Enter Your Passport ID')
+          div.col-xs-12
+            div.col-xs-5.registerInput
+              label(for='name') Name:
+            div.col-xs-7.inputBox
+              input#name.form-control(type='text', name='name', placeholder='Enter Your Given Name and Last Name')
+
+          div.col-xs-12
+            div.col-xs-5.registerInput
+              label(for='DOB') Date of Birth:
+            div.col-xs-7.inputBox
+              input#DOB.form-control(type='date', name='DOB', max='2017-12-31', min='1930-12-31', placeholder='Enter Date of Birth')
+          div.col-xs-12
+            div.col-xs-5.registerInput
+              label(for='gender') Gender:
+            div.col-xs-7.inputBox
+              input#gender-male(type='radio', name='gender', value='male')
+              | Male
+              input#gender-female(type='radio', name='gender', value='female')
+              | Female
+          div.col-xs-12
+            div.col-xs-5.registerInput
+              label(for='nationality') Nationality:
+            div.col-xs-7.inputBox
+              select#nationality.form-control(name='nationality')
+                option(value='0', selected='')  Select Your Nationality 
+                option(value='India') India
+                option(value='Pakistan') Pakistan
+                option(value='USA') United States
+                option(value='Australia') Australia
+                option(value='France') France
+                option(value='Germany') Germany
+          div.col-xs-12
+            div.col-xs-5.registerInput
+              label(for='idPhoto') Photo
+            div.col-xs-7.inputBox
+              input#idPhoto.form-control(type='file', name='idPhoto')
+          div.col-xs-12
+            div.col-xs-5.registerInput
+              label(for='signPhoto') Signature Photo
+            div.col-xs-7.inputBox
+              input#signPhoto.form-control(type='file', name='signPhoto')
+
+        div.col-xs-offset-1.col-xs-5
+          div.col-xs-12
+            div.col-xs-5.registerInput
+              label(for='countryName') Country of Passport:
+            div.col-xs-7.inputBox
+              select#countryName.form-control(name='countryName')
+                option(value='0', selected='')  Select Your Country 
+                option(value='India') India
+                option(value='Pakistan') Pakistan
+                option(value='USA') United States
+                option(value='Australia') Australia
+                option(value='France') France
+                option(value='Germany') Germany
+          div.col-xs-12
+            div.col-xs-5.registerInput
+              label(for='issueDate') Date of Issue:
+            div.col-xs-7.inputBox
+              input#issueDate.form-control(type='date', name='issueDate', max='2017-12-31', min='1950-12-31', placeholder='Enter Date of Birth')
+          div.col-xs-12
+            div.col-xs-5.registerInput
+              label(for='expiryDate') Date of Expiry:
+            div.col-xs-7.inputBox
+              input#expiryDate.form-control(type='date', name='expiryDate', max='2038-12-31', min='2018-12-31', placeholder='Enter Date of Expiry')
+          div.col-xs-12
+            div.col-xs-5.registerInput
+              label(for='placeOfBirth') Place Of Birth:
+            div.col-xs-7.inputBox
+              input#placeOfBirth.form-control(type='text', name='placeOfBirth', placeholder='Enter Your Place Of Birth')
+          div.col-xs-12
+            div.col-xs-5.registerInput
+              label(for='placeOfIssue') Place of Issue:
+            div.col-xs-7.inputBox
+              input#placeOfIssue.form-control(type='text', name='placeOfIssue', placeholder='Enter Your Place Of Issue')
+          div.col-xs-12
+            div.col-xs-5.registerInput
+              label(for='password') Password:
+            div.col-xs-7.inputBox
+              input#password.form-control(type='password', name='password', placeholder='Enter Your Password')
+          div.col-xs-12
+            div.col-xs-5.registerInput
+              label(for='password') Confirm Password:
+            div.col-xs-7.inputBox
+              input#confirmPassword.form-control(type='password', name='confirmPassword', placeholder='Enter Your Password')
+
+        div.col-xs-11.submitBlock
+          button#submit-btn.btn.btn-primary(type='submit', value='Submit') SUBMIT
+
+      div.col-xs-offset-4.col-xs-4
+        p#result
+
+  div.col-xs-12.no_padding.footerSection
+    label.control-label 
+    | Copyright © 2018 A.K.R.R. All Rights Reserved.
