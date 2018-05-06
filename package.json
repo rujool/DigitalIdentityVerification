@@ -25,5 +25,8 @@
     "nyc": "latest",
     "mkdirp": "latest",
     "mocha": "latest"
+  },
+  "dependencies": {
+    "express-validator": "^5.1.2"
   }
 }
