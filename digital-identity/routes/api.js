@@ -3,6 +3,7 @@ var router = express.Router();
 var multer = require('multer');
 var dateformat = require('dateformat');
 var cryptoJS = require('crypto-js');
+var request = require('ajax-request');
 const { check,validationResult } = require('express-validator/check');
 const { sanitizeBody } = require('express-validator/filter');
 
@@ -61,7 +62,6 @@ router.post('/passport',[
     check('placeOfBirth').exists().matches(/(a-zA-Z)*\s/),
     check('placeOfIssue').exists().matches(/(a-zA-Z)*\s/),
     check('password', 'passwords must be at least 5 chars long').isLength({ min: 5 }).matches(/(a-zA-Z1-9)*\s/), 
-    
     check('confirmPassword', 'Password Confirmation field must have the same value as the password field').exists()
     .custom((value, { req }) => value === req.body.password)
 ], mulUpload,function(req,res){
@@ -80,6 +80,22 @@ router.post('/passport',[
             },function err(){
                 res.send("Error");
             });
+        });
+});
+
+router.post('/verify-passport',[
+    check('id').exists().matches(/\d/),
+    check('password').exists()
+    ], 
+    function(req,res){
+        request({
+            url: '/api/passport/'+req.body.id,
+            method: 'GET',
+            data: {
+                password: req.body.password
+            }
+        }, function(err, res, body) {
+            console.log(res);
         });
 });
 

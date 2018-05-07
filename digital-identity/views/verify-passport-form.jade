@@ -1,0 +1,35 @@
+extends layout
+block content
+  div.col-xs-12.no_padding.headerSection
+    div.navbar.navbar-inverse.menulist
+      div.container-fluid
+        div.navbar-header
+          a.navbar-brand(href='#') Digital Identity Application
+  
+  div.col-xs-12.no_padding.bodySection
+    div.col-xs-12.addGovernmentPage
+      h4(style='background-color:  black; color:  white;  margin-top: 5px;')
+        label(style='margin: 10px 0 10px 40px;')
+          | Verify Passport
+      form#addOfficial.signup(action='/api/verify-passport',method='POST', style='margin: 50px 0 0px 50px;')
+    
+        div.col-xs-12
+          div.col-xs-12
+            label(for='name') Passport ID:
+          div.col-xs-6
+            input#id.form-control(type='text', placeholder='Enter Your Passport ID' name='id' required)
+
+          div.col-xs-12
+            label(for='password') Password:
+          div.col-xs-6
+            input#password.form-control(type='text', placeholder='Enter Your Password' name='password' required)
+
+        div.col-xs-11(style='margin-top:30px; padding-left:30px;')
+          button#submit-btn.btn.btn-primary(type='submit', value='Submit') SUBMIT
+
+    div.col-xs-offset-4.col-xs-4
+      p#result
+
+  div.col-xs-12.no_padding.footerSection
+    label.control-label 
+      | Copyright © 2018 A.K.R.R. All Rights Reserved.

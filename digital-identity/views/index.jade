@@ -10,30 +10,33 @@ block content
     div.col-xs-12.addGovernmentPage
       h4(style='background-color:  black; color:  white;  margin-top: 5px;')
         label(style='margin: 10px 0 10px 40px;')
-          | Add Official
-      form#addOfficial.signup(action='/api/official',method='POST', style='margin: 50px 0 0px 50px;')
-    
+          | Home Page
+
+      div.container.col-xs-12(style='margin-top: 30px') 
         div.col-xs-12
-          div.col-xs-12
-            label(for='name') Official Name:
-          div.col-xs-6
-            input#name.form-control(type='text', placeholder='Enter Given Name and Last Name' name='name' required)
-
-          div.col-xs-12
-            label(for='id') Official ID:
-          div.col-xs-6
-            input#id.form-control(type='text', placeholder='ID' name='id' required)
-
-          div.col-xs-12
-            label(for='designation') Designation:
-          div.col-xs-6
-            input#designation.form-control(type='text', placeholder='Designation' name='designation' required)
-
-        div.col-xs-11(style='margin-top:30px; padding-left:30px;')
-          button#submit-btn.btn.btn-primary(type='submit', value='Submit') SUBMIT
-
-    div.col-xs-offset-4.col-xs-4
-      p#result
+          div.col-xs-3
+            label(for='name') Add Passport:
+          div.col-xs-5
+            a(href='./passport-form')
+              button#addPassport.btn.btn-primary.form-control(type='button')| Click to add new passport
+        div.col-xs-12
+          div.col-xs-3
+            label(for='name') Verify Passport:
+          div.col-xs-5
+            a(href='./verify-passport-form')
+              button#verifyPassport.btn.btn-primary.form-control(type='button')| Click to verify passport
+        div.col-xs-12
+          div.col-xs-3
+            label(for='name') Add Government:
+          div.col-xs-5
+            a(href='./government-form')
+              button#addGovernment.btn.btn-primary.form-control(type='button')| Click to add new government
+        div.col-xs-12
+          div.col-xs-3
+            label(for='name') Add Official:
+          div.col-xs-5
+            a(href='./official-form')
+              button#addOfficial.btn.btn-primary.form-control(type='button')| Click to add new official
 
   div.col-xs-12.no_padding.footerSection
     label.control-label 
