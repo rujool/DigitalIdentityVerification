@@ -12,7 +12,8 @@
  * limitations under the License.
  */
 'use strict';
-
+var cryptoJS = require('crypto-js');
+var crypto = require('crypto');
 const BusinessNetworkConnection = require('composer-client').BusinessNetworkConnection;
 
 let cardname = 'admin@digital-identity-network';
@@ -51,38 +52,51 @@ class IdentityRegistry {
     }
 
     // Add Passport
-    async addPassport(passportData){
+    async addPassport(obj){
         let passport;
         try{
             this.passportRegistry = await this.bizNetworkConnection.getAssetRegistry('org.acme.digitalidentitynetwork.Passport');
             let factory = this.businessNetworkDefinition.getFactory();
-            var formData = passportData.formData;
-            passport = factory.newResource('org.acme.digitalidentitynetwork','Passport',formData['passport-id']);
-            passport.name = formData['name'];
-            passport.gender = formData['gender'];
-            passport.countryName = formData['countryName'];
-            passport.DOB = new Date(formData['DOB']);
-            passport.fathersName = formData['fathersName'];
-            passport.mothersName = formData['mothersName'];
-            passport.nationality = formData['nationality'];
-            passport.placeOfBirth = formData['placeOfBirth'];
-            passport.placeofIssue = formData['placeOfIssue'];
-            passport.issueDate = new Date(formData['issueDate']);
-            passport.expiryDate = new Date(formData['expiryDate']);
-            passport.photoString = passportData.idPhotoStr;
-            passport.signatureString = passportData.signPhotoStr;
+            passport = factory.newResource('org.acme.digitalidentitynetwork','Passport',obj.passportData.passportID);
+            passport.passportData = obj.passportData.data;
+            passport.signature = obj.signature;
             return await this.passportRegistry.add(passport);
         }catch(error){
             console.log(error);
+            throw error;
         }
     }
-    async getPassport(passportID){
+    async getPassport(credObj){
         let passport;
         try{
             this.passportRegistry = await this.bizNetworkConnection.getAssetRegistry('org.acme.digitalidentitynetwork.Passport');
-            return await this.passportRegistry.get(passportID);
+            this.governmentRegistry = await this.bizNetworkConnection.getParticipantRegistry('org.acme.digitalidentitynetwork.Government');
+            
+            passport = await this.passportRegistry.get(credObj.id);
+            var IV = credObj.iv;
+            var passportData = passport.passportData;
+            var encryptedID = passport.passportID;
+            var decryptedID = cryptoJS.AES.decrypt(encryptedID,credObj.password,{
+                'iv':IV
+            }).toString(cryptoJS.enc.Utf8);
+            var decryptedData = JSON.parse(cryptoJS.AES.decrypt(passportData,credObj.password,{
+                'iv':IV
+            }).toString(cryptoJS.enc.Utf8));
+            var govName = decryptedData.formData.countryName;
+            var signature = passport.signature;
+            let government = await this.governmentRegistry.get(govName);
+            var publicKey = government.publicKey;
+            var encryptedObj = {
+                'passportID': encryptedID,
+                'data' : passportData
+            };
+            var verifyObj = crypto.createVerify('RSA-SHA256');
+            verifyObj.update(JSON.stringify(encryptedObj));
+            var verified = verifyObj.verify(publicKey,signature,'base64');
+            return decryptedData; 
         }catch(error){
             console.log(error);
+            throw "Error: Please check your credentials";
         }
     }
 

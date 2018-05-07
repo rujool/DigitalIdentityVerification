@@ -6,19 +6,8 @@ namespace org.acme.digitalidentitynetwork
 
 asset Passport identified by passportID{
   o String passportID
-  o String name
-  o String countryName
-  o String gender
-  o DateTime DOB
-  o String fathersName
-  o String mothersName
-  o String nationality
-  o String placeOfBirth
-  o String placeofIssue
-  o DateTime issueDate
-  o DateTime expiryDate
-  o String photoString
-  o String signatureString
+  o String passportData
+  o String signature
 }
 
 participant Government identified by countryName{

@@ -15,15 +15,14 @@ block content
         div.col-xs-5
           div.col-xs-12
             div.col-xs-5.registerInput
-              label(for='passport-id') Passport ID
+              label(for='id') Passport ID
             div.col-xs-7.inputBox
-              input#passport-id.form-control(type='text', name='passport-id', placeholder='Enter Your Passport ID')
+              input#id.form-control(type='text', name='id', placeholder='Enter Your Passport ID')
           div.col-xs-12
             div.col-xs-5.registerInput
               label(for='name') Name:
             div.col-xs-7.inputBox
               input#name.form-control(type='text', name='name', placeholder='Enter Your Given Name and Last Name')
-
           div.col-xs-12
             div.col-xs-5.registerInput
               label(for='DOB') Date of Birth:
@@ -39,16 +38,17 @@ block content
               | Female
           div.col-xs-12
             div.col-xs-5.registerInput
-              label(for='nationality') Nationality:
+              label(for='fathersName') Father's Name:
             div.col-xs-7.inputBox
-              select#nationality.form-control(name='nationality')
-                option(value='0', selected='')  Select Your Nationality 
-                option(value='India') India
-                option(value='Pakistan') Pakistan
-                option(value='USA') United States
-                option(value='Australia') Australia
-                option(value='France') France
-                option(value='Germany') Germany
+              div.col-xs-7.inputBox
+              input#fathersName.form-control(type='text', name='fathersName', placeholder="Father's Name")
+          div.col-xs-12
+            div.col-xs-5.registerInput
+              label(for='mothersName') Mother's Name:
+            div.col-xs-7.inputBox
+              div.col-xs-7.inputBox
+              input#nationality.form-control(type='text', name='mothersName', placeholder="Mother's Name")
+
           div.col-xs-12
             div.col-xs-5.registerInput
               label(for='idPhoto') Photo
@@ -59,20 +59,20 @@ block content
               label(for='signPhoto') Signature Photo
             div.col-xs-7.inputBox
               input#signPhoto.form-control(type='file', name='signPhoto')
+          
 
         div.col-xs-offset-1.col-xs-5
           div.col-xs-12
             div.col-xs-5.registerInput
+              label(for='nationality') Nationality:
+            div.col-xs-7.inputBox
+              div.col-xs-7.inputBox
+              input#nationality.form-control(type='text', name='nationality', placeholder='Nationality')
+          div.col-xs-12
+            div.col-xs-5.registerInput
               label(for='countryName') Country of Passport:
             div.col-xs-7.inputBox
-              select#countryName.form-control(name='countryName')
-                option(value='0', selected='')  Select Your Country 
-                option(value='India') India
-                option(value='Pakistan') Pakistan
-                option(value='USA') United States
-                option(value='Australia') Australia
-                option(value='France') France
-                option(value='Germany') Germany
+              input#countryName.form-control(type='text', name='countryName', placeholder='Enter Country Name')
           div.col-xs-12
             div.col-xs-5.registerInput
               label(for='issueDate') Date of Issue:
@@ -92,7 +92,7 @@ block content
             div.col-xs-5.registerInput
               label(for='placeOfIssue') Place of Issue:
             div.col-xs-7.inputBox
-              input#placeOfIssue.form-control(type='text', name='placeOfIssue', placeholder='Enter Your Place Of Issue')
+              input#placeOfIssue.form-control(type='text', name='placeofIssue', placeholder='Enter Your Place Of Issue')
           div.col-xs-12
             div.col-xs-5.registerInput
               label(for='password') Password:

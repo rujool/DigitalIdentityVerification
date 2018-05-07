@@ -3,12 +3,9 @@ var router = express.Router();
 var multer = require('multer');
 var dateformat = require('dateformat');
 var cryptoJS = require('crypto-js');
-var request = require('ajax-request');
-const { check,validationResult } = require('express-validator/check');
-const { sanitizeBody } = require('express-validator/filter');
-
 const IdentityRegistry = require('../lib/identityregistry');
 var NodeRSA = require('node-rsa');
+var crypto = require('crypto');
 var fs = require('fs');
 
 var multerConf = {
@@ -33,11 +30,8 @@ router.get('/', function(req, res, next) {
    res.send("API")
 });
 
-router.route('/official').post([
-        check('id').exists().isInt(),
-        check('name').exists().matches(/(a-zA-Z)*\s/),
-        check('designation').exists().matches(/(a-zA-Z)*\s/),
-    ],function(req,res,next){
+router.route('/official')
+    .post(function(req,res,next){
         var idReg = new IdentityRegistry();
         idReg.init().then(function(){
             idReg.addOfficial(req.body).then(function success(){
@@ -48,75 +42,104 @@ router.route('/official').post([
         });
     });
 
-router.post('/passport',[
-    check('passport-id').exists().isInt(),
-    check('name').exists().matches(/(a-zA-Z)*\s/),
-    check('DOB').exists(),
-    check('gender').exists(),
-    check('nationality').exists(),
-    check('idPhoto').exists(),
-    check('signPhoto').exists(),
-    check('countryName').exists(),
-    check('issueDate').exists(),
-    check('expiryDate').exists(),
-    check('placeOfBirth').exists().matches(/(a-zA-Z)*\s/),
-    check('placeOfIssue').exists().matches(/(a-zA-Z)*\s/),
-    check('password', 'passwords must be at least 5 chars long').isLength({ min: 5 }).matches(/(a-zA-Z1-9)*\s/), 
-    check('confirmPassword', 'Password Confirmation field must have the same value as the password field').exists()
-    .custom((value, { req }) => value === req.body.password)
-], mulUpload,function(req,res){
-        var files = req.files;
-        var idPhotoStr = req.files['idPhoto'][0].buffer.toString('base64');
-        var signPhotoStr = req.files['signPhoto'][0].buffer.toString('base64');
-        var passportData = {
-            'formData':req.body,
-            'idPhotoStr': idPhotoStr,
-            'signPhotoStr': signPhotoStr
+router.post('/passport',mulUpload,function(req,res){
+    var files = req.files;
+    var photoIDStr = req.files['idPhoto'][0].buffer.toString('base64');
+    var signStr = req.files['signPhoto'][0].buffer.toString('base64');
+    var AESkey = req.body.password;
+    var countryName = req.body.countryName;
+    var countryPrivateKey = __dirname+"/../keys/governments/"+countryName + ".txt";
+    fs.readFile(countryPrivateKey, 'utf8', function (err,fileData) {
+        if (err) {
+          return console.log(err);
+        }
+        var privateKey = fileData;
+        passportData = {
+            formData: req.body,
+            idPhotoStr: photoIDStr,
+            signPhotoStr: signStr
         };
-        var idReg = new IdentityRegistry();
-        idReg.init().then(function(){
-            idReg.addPassport(passportData).then(function success(){
-                res.send("Success!");
-            },function err(){
-                res.send("Error");
-            });
+        IV = cryptoJS.lib.WordArray.random(128/8);
+        password = cryptoJS.lib.WordArray.create(req.body.password);
+        var encryptedID = cryptoJS.AES.encrypt(req.body.id,password,{
+            'iv':IV
         });
-});
-
-router.post('/verify-passport',[
-    check('id').exists().matches(/\d/),
-    check('password').exists()
-    ], 
-    function(req,res){
-        request({
-            url: '/api/passport/'+req.body.id,
-            method: 'GET',
-            data: {
-                password: req.body.password
+        var cipherTextID = encryptedID.toString();
+        var filename = __dirname+'/../keys/users/'+req.body.id+'.txt';
+        var fileStr = IV.toString();    
+        fs.writeFile(filename,fileStr,function(err){
+            if(err){
+                return console.log(err);
             }
-        }, function(err, res, body) {
-            console.log(res);
+            console.log('File saved');
         });
-});
-
-router.get('/passport/:id',function(req,res){
+        var encryptedData = cryptoJS.AES.encrypt(JSON.stringify(passportData),password,{
+            'iv':IV,
+        });
+        finalPassportData = {
+            'passportID': cipherTextID,
+            'data' : encryptedData.toString()
+        }
+        var signObj = crypto.createSign('RSA-SHA256');
+        signObj.update(JSON.stringify(finalPassportData));
+        var signature = signObj.sign(privateKey,'base64');
+        passportObj = {
+            'passportData':finalPassportData,
+            'signature':signature
+        };
+    });
     var idReg = new IdentityRegistry();
     idReg.init().then(function(){
-        idReg.getPassport(req.params.id).then(function(response){
-            response.DOB = dateformat(response.DOB, "dd/mm/yyyy");
-            response.issueDate = dateformat(response.issueDate,"dd/mm/yyyy");
-            response.expiryDate = dateformat(response.expiryDate,"dd/mm/yyyy");
-            res.render('view-passport',{'passportData':response});
-        },function error(err){
-            res.send(err);
-        });      
-    }, function(err){
-        res.send(err);
+        idReg.addPassport(passportObj).then(function success(){
+            res.send("Success!");
+        },function err(){
+            res.send("Error");
+        });
     });
 });
 
+router.post('/verify-passport',function(req,res){
+    
+    var password = cryptoJS.lib.WordArray.create(req.body.password);
+    var userKeyFile = __dirname+"/../keys/users/"+req.body.id+".txt";
+    if (!fs.existsSync(userKeyFile)) {
+        return res.send("Passport does not exist!");
+    }
+    fs.readFile(userKeyFile,'utf8',function(err,fileStr){
+        if(err){
+            res.send("Error in fetching user details!");
+        }
+        var iv = cryptoJS.enc.Hex.parse(fileStr);
+        var encryptedID = cryptoJS.AES.encrypt(req.body.id,password,{
+            'iv': iv
+        });
+        var credObj = {
+            id: encryptedID.toString(),
+            iv: iv,
+            password: password
+        }
+        var idReg = new IdentityRegistry();
+        idReg.init().then(function(){
+            idReg.getPassport(credObj).then(function(response){
+                var formData = response.formData;
+                formData.DOB = dateformat(formData.DOB, "dd/mm/yyyy");
+                formData.issueDate = dateformat(formData.issueDate,"dd/mm/yyyy");
+                formData.expiryDate = dateformat(formData.expiryDate,"dd/mm/yyyy");
+                formData.photoString = response.idPhotoStr;
+                formData.signatureString = response.signPhotoStr;
+                res.render('view-passport',{'passportData':formData});
+            },function error(err){
+                res.send(err);
+            });      
+        }, function(err){
+            res.send(err);
+        });        
+    });
+
+});
+
 router.route('/government')
-    .post([check('name').exists().matches(/(a-zA-Z)*\s/)], function(req,res,next){
+    .post(function(req,res,next){
         var idReg = new IdentityRegistry();
         var key = new NodeRSA();
         key.generateKeyPair();
